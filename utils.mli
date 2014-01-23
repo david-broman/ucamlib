@@ -55,6 +55,15 @@ val ( >> ) : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
 
 val map_option : ('a -> 'b) -> 'a option -> 'b option
 
+val map2sc : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
+(* Map2 short-ciruit *)
+
+
+val filtermap : ('a -> 'b option) -> 'a list -> 'b list
+
+val foldmap : ('a -> 'b -> 'a * 'c) -> 'a -> 'b list -> 'a * 'c list
+
+
 val string_of_intlist : int list -> string
 (** Converts a list of integers to a string, where the least 8 significant bits
     are used of each integer. *)
@@ -76,3 +85,22 @@ val fold_interval : ('a -> int -> 'a) -> 'a -> int -> int -> 'a
 (** [fold_interval f a start end] folds an integer interval starting at 
    [start] and ending with [end]. For each number in the interval, function
    [f] is called. *) 
+
+val genlist : (int -> 'a) -> int -> 'a list
+(** Call [genlist f n] Generates a list with [n] elements, where expression [f i] 
+    is the value of each element and [i] is the index in the list starting at 0. *)
+
+val xor : bool -> bool -> bool
+
+val pipeprint : ('a -> Ustring.Op.ustring) -> 'a -> 'a
+
+
+module Int :
+sig
+  type t = int
+  val compare : t -> t -> int
+end
+(** Integer module with functions [compare] and type [t], which makes it easy to be
+    passed as argument to functors [Set.Make] and [Map.Make]
+*)
+

@@ -36,6 +36,40 @@ let map_option f op =
     | Some t -> Some (f t)
     | None -> None
 
+let rec map2sc f l1 l2 =
+  match l1,l2 with
+    | [],_ -> []
+    | _,[] -> []
+    | (x::xs),(y::ys) -> (f x y)::(map2sc f xs ys)
+
+let rec filtermap f ls =
+  match ls with
+    | x::xs -> (match f x with 
+		  | Some y -> y::(filtermap f xs) 
+		  | None -> filtermap f xs)
+    | [] -> []
+
+let foldmap f k ls =
+  let rec work f k ls a =
+    match ls with
+      | x::xs -> 
+        let (k',x') = f k x in
+          work f k' xs (x'::a)
+      | [] -> (k,List.rev a)
+  in work f k ls []
+
+
+let rec option_split lst =
+  match lst with
+    | (Some x)::xs -> 
+	(match option_split xs with
+	  | Some xs' -> Some (x::xs')
+	  | None -> None)
+    | (None)::xs -> None
+    | [] -> Some []
+
+
+
 let string_of_intlist il = 
   let s = String.create (List.length il) in
   il |> List.fold_left (fun i x -> (s.[i] <- char_of_int x); i+1) 0 |> ignore;
@@ -70,6 +104,25 @@ let read_binfile filename =
   
 let rec fold_interval f a s e =
   if s = e then (f a s) else fold_interval f (f a s) (s+1) e  
+
+
+
+let genlist f n =
+  let rec work i a = 
+    if i >= 0 then work (i-1) ((f (i-1))::a) else a 
+  in work n []
+
+let xor b1 b2 = (b1 || b2) && (not (b1 && b2))
+
+let pipeprint f data = Ustring.Op.uprint_endline (f data);data 
+
+
+
+module Int =
+struct 
+  type t = int
+  let compare = compare
+end
 
 
 
