@@ -3,6 +3,7 @@
 
 
 F_MLI = $(addsuffix .mli, $(FILES) $(ONLY_MLI_FILES))
+F_MLONLY = $(addsuffix .ml, $(FILES) $(ONLY_ML_FILES))
 F_ML =  $(addsuffix .ml, $(FILES))
 F_CMX = $(addsuffix .cmx, $(FILES))
 F_LIB = $(addsuffix .cmxa, $(LIB_NAME))
