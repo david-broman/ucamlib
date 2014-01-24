@@ -44,6 +44,13 @@ val last : 'a list -> 'a
 val findindex : 'a -> 'a list -> int
 (** Function [findindex x l] returns the index for the first occurance of [x] in list [l]. Raises [Not_found] if [x] does not exist in [l]. *)
 
+
+val find_associndex : 'a -> ('a * 'b) list -> ('b * int)
+(** Expression [find_associndex x l] returns a tuple with value and index for
+    the first occurance of [x] in the association list [l]. 
+    Raises [Not_found] if [x] is not a key in [l].*)
+
+
 val ( |> ) : 'a -> ('a -> 'b) -> 'b
 (** Pipe-forward operator *)
 

@@ -25,6 +25,13 @@ let findindex x l =
       | y::ys -> if x = y then c else findidx ys (c+1)
   in findidx l 0
 
+let find_associndex x l = 
+  let rec findidx l c =
+    match l with
+      | [] -> raise Not_found
+      | (y,v)::ys -> if x = y then (v,c) else findidx ys (c+1)
+  in findidx l 0
+
 let (|>) x f = f x 
 
 let (<|) f x = f x 
