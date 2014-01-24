@@ -1,7 +1,2 @@
-*.a
-*.cmxa
-*.cmi
-*.cmx
-*.o
-*.out
+_build
 .depend

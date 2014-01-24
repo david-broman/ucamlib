@@ -40,9 +40,9 @@ val shortest_distance_graph : graph -> int -> ((int * int) list) array
     graph, where the array is indexed using vertex numbers and each
     associate lists represents adjacent vertices. The key in the
     associate list is the vertex and the value is the distance to
-    vertex [v]. For instance, for a graph G=(V,E), where V={v0,v1,v2}
-    and E={(v0,v1),(v1,v2)}, and the start v is 2, then the resulting
-    distance graph (in array form) is [| [(v1,1)]; [v2,0]; [] |] *)
+    vertex [v]. For instance, for a graph G=(V,E), where V=\{v0,v1,v2\}
+    and E=\{(v0,v1),(v1,v2)\}, and the start v is 2, then the resulting
+    distance graph (in array form) is [[| [(v1,1)]; [v2,0]; [] |]] *)
 
 val shortest_distance_graph_ext : graph -> int -> ((int * int) list) array
 (** [shortest_distance_graph_ext G_r v] is identical to [shortest_distance_graph]
