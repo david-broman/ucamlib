@@ -6,9 +6,9 @@ open Utest
 open Ugraph
 
 
-let main = 
+let main() = 
 
-  init "Test various graph functions";
+  init "Test the UGraph module.";
 
 
   (** ------------------- Topological Sort ------------------- *)

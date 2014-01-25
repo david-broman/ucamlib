@@ -147,8 +147,6 @@ let from_utf8_worker s slen fail =
   in
   let i = convert 0 0 in (i,a)
 
-(* ST: test_encodin_latin1 
-   ET: test_encode_latin1_error *)
 let rec to_latin1 s = 
   match !s with
     | Uchars(a) -> begin
@@ -163,16 +161,13 @@ let rec to_latin1 s =
     | Branch(s1,s2) as t -> s := Uchars(collapse t); to_latin1 s
 
 
-(* ST: test_encoded_utf8 (no 1-4) 
-   ET: test_encoded_from_uchars (exception) *)
 let from_uchars a = 
   Array.iter (fun c -> if not (valid_uchar c) then 
 		         raise (Invalid_argument "Ustring.from_uchars")
 		       else ()) a; ref (Uchars(a))
 
 
-(* ST: test_encoded_utf8 (no 1-4)
-   Note: Function should not throw an exception, since only well defined
+(*   Note: Function should not throw an exception, since only well defined
          unicode characters are available internally. *)
 let rec to_utf8 s = 
   let rec calc_size_to_utf8 a = Array.fold_left
@@ -225,7 +220,6 @@ let rec to_utf8 s =
 
 module Op =
 struct 
-  (*let fast_append s1 s2 = ref (Branch(!s1,!s2)) *)
     
   type ustring = tree ref
 
@@ -240,31 +234,25 @@ struct
   type sidset = SidSet.t
 
 
-  (* ST: test_append (no 1-4) *)
   let (^.) s1 s2 = ref (Branch(!s1,!s2))
 
-  (* ST: test_append (no 1,2,4) *)
   let (^..) s1 s2 = 
     let s1 = collapse_ustring s1 in
     let s2 = collapse_ustring s2 in
     ref (Uchars(Array.append s1 s2))
 
-  (* ST: test_append_1 *)
   let (=.) s1 s2 = 
     let s1 = collapse_ustring s1 in
     let s2 = collapse_ustring s2 in
     s1 = s2
 
-  (* ST: test_append_1 *)
   let (<>.) s1 s2 = not (s1 =. s2)
 
 
-  (* ST: test_encodin_latin1 *)
   let us s = 
     let (s2,len2) = normalize_newlines s in
     ref (Uchars(Array.init len2 (fun i -> int_of_char (String.get s2 i))))
  
-  (* ST: test_append_3 *)
   let uc c = int_of_char (if c = '\x0D' then '\x0A' else c)
 
   module OrderedUString =
@@ -293,50 +281,37 @@ struct
 
   let usid s = sid_of_ustring (us s)
 
-  (* ST: test_ustring_conversion_functions *)
   let ustring_of_bool b = if b then us"true" else us"false"
 
-  (* ST: test_ustring_conversion_functions *)
   let bool_of_ustring s = 
     if s =. us"true" then true
     else if s =. us"false" then false
     else raise (Invalid_argument "bool_of_ustring")
 
-  (* ST: test_ustring_conversion_functions *)
   let ustring_of_int i = us (string_of_int i)
 
-  (* ST: test_ustring_conversion_functions *)
   let int_of_ustring s =
     try int_of_string (to_latin1 s) 
     with _ -> raise (Failure "int_of_ustring")
   
-  (* ST: test_ustring_conversion_functions *)
   let ustring_of_float f = us (string_of_float f)
 
-  (* ST: test_ustring_conversion_functions *)
   let float_of_ustring s =
     try float_of_string (to_latin1 s) 
     with _ -> raise (Failure "int_of_ustring")
 
-  (* ST: *)
   let uprint_char c = print_string (to_utf8 (from_uchars [|c|]))
 
-  (* ST: *)
   let uprint_string s = print_string (to_utf8 s)
 
-  (* ST: *)
   let uprint_int i = print_int i
 
-  (* ST: *)
   let uprint_float f = print_float f
 
-  (* ST: *)
   let uprint_endline s = print_endline (to_utf8 s)
 
-  (* ST: *)
   let uprint_newline() = print_newline()
 
-  (* ST: *)
   let uprint_bool b = print_string (if b then "true" else "false")
 
 end
@@ -348,14 +323,11 @@ type t = Op.ustring
 
 
 
-(* ST: test_encodin_latin1 *)
 let rec length s =
   match !s with 
     | Uchars(a) -> Array.length a
     | Branch(_,_) as t -> s := Uchars(collapse t); length s
 
-(* ST: test_encodin_latin1 
-   ET: test_encode_get_error *)
 let rec get s n = 
   match !s with
     | Uchars(a) -> 
@@ -363,8 +335,6 @@ let rec get s n =
          with Invalid_argument _ -> raise (Invalid_argument "Ustring.get"))
     | Branch(_,_) as t -> s := Uchars(collapse t); get s n
 
-(* ST: test_append_4
-   ET: test_encode_set_error *)
 let rec set s n c =
   match !s with
     | Uchars(a) -> 
@@ -373,16 +343,12 @@ let rec set s n c =
     | Branch(_,_) as t -> s := Uchars(collapse t); set s n c
 
 
-(* ST: *)
 let make n c = ref (Uchars (Array.make n c))
 
-(* ST: *)
 let create n = make n (Op.uc ' ')
 
-(* ST: *)
 let copy s = ref (Uchars(collapse_ustring s))
 
-(* ST: *)
 let sub s start len =
   let s2 = collapse_ustring s in
   try
@@ -390,8 +356,6 @@ let sub s start len =
   with
       Invalid_argument _ -> raise (Invalid_argument "Ustring.sub")
 
-(* ST: 
-   ET: *)
 let rec rindex_from_internal s i c = 
   try
     if s.(i) = c then i 
@@ -399,24 +363,16 @@ let rec rindex_from_internal s i c =
   with Invalid_argument _ -> raise (Invalid_argument "Ustring.rindex_from")
 
 
-(* ST: 
-   ET: *)
 let rindex_from s i c = 
   let s2 = (collapse_ustring s) in
   if Array.length s2 = 0 then raise Not_found 
   else rindex_from_internal (collapse_ustring s) i c
 
-(* ST: 
-   ET: *)
 let rindex s c = rindex_from s (length s - 1) c
 
 
-
-(* ST: test_append (no 1-4) using operator '^.'
-       test_append_5 where function fast_append is called directly *)
 let fast_append s1 s2 = Op.( ^.) s1 s2 
 
-(* ST: *)
 let fast_concat sep sl = 
   let rec worker sl ack first = 
     match sl with
@@ -425,10 +381,8 @@ let fast_concat sep sl =
 	         else worker ss (Op.(^.) (Op.(^.) ack sep) s) false
   in worker sl (Op.us"") true
 
-(* ST: *)
 let concat sep sl = copy (fast_concat sep sl)
 
-(* ST: *)	          
 let count s c =
   let s2 = collapse_ustring s in
   Array.fold_left (fun a b -> if b = c then a + 1 else a) 0 s2
@@ -448,21 +402,18 @@ let find_trim_right s =
     else if s.(i-1) > space_char then i else worker (i-1)
   in worker (Array.length s)
 
-(* ST: *)
 let trim_left s = 
   let s2 = collapse_ustring s in
   let left = find_trim_left s2 in
   let len = (Array.length s2) - left in
   ref (Uchars (Array.sub s2 left len))
 
-(* ST: *)
 let trim_right s = 
   let s2 = collapse_ustring s in
   let left = 0 in
   let len = find_trim_right s2 in
   ref (Uchars (Array.sub s2 left len))
     
-(* ST: *)
 let trim s = 
   let s2 = collapse_ustring s in
   let left = find_trim_left s2 in
@@ -471,13 +422,25 @@ let trim s =
   else ref (Uchars (Array.sub s2 left len))
 
 
-(* ST: *)
 let empty() = ref (Uchars [||])
 
-(* ST: TODO implement*) 
+let split s c =
+  let s2 = collapse_ustring s in
+  let len = Array.length s2 in
+  let rec worker last i acc = 
+    if i < len then
+      if s2.(i) = c then
+        worker (i+1) (i+1) ((ref (Uchars (Array.sub s2 last (i-last))))::acc)
+      else
+        worker last (i+1) acc
+    else 
+        ((ref (Uchars (Array.sub s2 last (i-last))))::acc)
+  in
+    if len = 0 then [] else List.rev (worker 0 0 [])
+
+(* TODO implement*) 
 let unix2dos s = s 
 
-(* ST: *)
 let string2hex s = 
   let l = String.length s in
   let rec worker i a first=
@@ -490,35 +453,25 @@ let string2hex s =
   in worker 0 (Op.us"") true
 
 
-(* ST: test_append (no 1,2,4) using operator '^..'
-       test_append_5 where function append is called directly *)
 let append s1 s2 = Op.(^..) s1 s2 
 
-(* ST: test_encodin_latin1 *)
 let from_latin1 s = Op.us s
 
-(* ST: *)
 let from_latin1_char c = Op.us  (String.make 1 c)
 
-(* ST: test_encoded_utf8 (no 1-4)
-   ET: test_encode_from_utf8_error *)
 let from_utf8 s = 
   let fail() = raise (Invalid_argument "Ustring.from_utf8") in
   let (s2,len2) = normalize_newlines s in 
   let (i,a) = from_utf8_worker s2 len2 fail in
   if i = len2 then ref (Uchars(a)) else fail()
 
-(* ST: test_encoded_utf8 (no 1-4) *)
 let rec to_uchars s =
   match !s with 
     | Uchars(a) -> a
     | Branch(s1,s2) as t -> s := Uchars(collapse t); to_uchars s
 
-(* ST: test_append_3 *)
 let latin1_to_uchar c = Op.uc c
 
-(* ST: 
-   ET: *)
 let validate_utf8_string s n = 
   let fail pos = raise (Decode_error (Utf8,pos)) in
   let rec validate i =
@@ -711,30 +664,13 @@ let lexing_function ?(encode_type=Auto) ic =
 	    (ref "") (ref "") (ref 0))
 
 
-(* ST: 
-let lexing_from_channel_old ?(encode_type=Auto) ic =
-  match encode_type with
-    | Auto -> begin
-	let (enc,buf) = read_bom ic in
-	Lexing.from_function (lexing_function ic (ref enc) 
-		(ref buf) (ref "") (ref (String.length buf)))
-      end
-    | _ -> Lexing.from_function (lexing_function ic (ref encode_type) 
-	    (ref "") (ref "") (ref 0))
-*)
-
-(* ST: 
-*)
 let lexing_from_channel ?(encode_type=Auto) ic =
   Lexing.from_function (lexing_function ~encode_type:encode_type ic)
 
 
-(* ST: *)
 let lexing_from_ustring s =
   Lexing.from_string (to_utf8 s)
 
-(* ST: 
-   ET: *)
 let read_from_channel ?(encode_type=Auto) ic = 
   let reader = lexing_function ~encode_type:encode_type ic in
   let readsize = 4096 in
@@ -752,8 +688,6 @@ let read_from_channel ?(encode_type=Auto) ic =
   end
 
 
-(* ST:
-   ET: *)
 let convert_escaped_chars s =
   let rec conv esc s =
     match esc,s with
@@ -771,8 +705,6 @@ let convert_escaped_chars s =
   let a2 = conv false (Array.to_list (collapse_ustring s)) in
     ref (Uchars(Array.of_list a2))
 
-(* ST: 
-   ET: *)
 let read_file ?(encode_type=Auto) fn = 
   let ic = open_in fn in
   let reader = read_from_channel ~encode_type:encode_type ic in
@@ -785,21 +717,15 @@ let read_file ?(encode_type=Auto) fn =
     close_in ic; sout
     
 
-
-
-(* ST: test_compare *)
 let compare s1 s2 = 
   let s1 = collapse_ustring s1 in
   let s2 = collapse_ustring s2 in
   compare s1 s2
 
-(* ST: test_append_1 *)
 let equal s1 s2 = Op.( =. ) s1 s2 
 
-(* ST: test_append_1 *)
 let not_equal s1 s2 = Op.( <>. ) s1 s2 
 
-(* ST: test_hashtbl*)
 let hash t = Hashtbl.hash (collapse_ustring t)
 
 
