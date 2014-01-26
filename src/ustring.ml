@@ -424,12 +424,19 @@ let trim s =
 
 let empty() = ref (Uchars [||])
 
-let split s c =
+let split s c =  
   let s2 = collapse_ustring s in
+  let c2 = collapse_ustring c in
   let len = Array.length s2 in
+  let len_c2 = Array.length c2 in
+  let rec has_char ch i = 
+    if i < len_c2 then
+      if c2.(i) = ch then true else has_char ch (i+1) 
+    else false
+  in  
   let rec worker last i acc = 
     if i < len then
-      if s2.(i) = c then
+      if has_char (s2.(i)) 0 then
         worker (i+1) (i+1) ((ref (Uchars (Array.sub s2 last (i-last))))::acc)
       else
         worker last (i+1) acc

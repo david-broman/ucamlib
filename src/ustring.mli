@@ -358,10 +358,10 @@ val trim : ustring -> ustring
 val empty : unit -> ustring
 (** Returns an empty ustring *)
 
-val split : ustring -> uchar -> ustring list
-(** [split s c] splits string [s] at points where character [c] appears. 
+val split : ustring -> ustring -> ustring list
+(** [split s c] splits string [s] at points where characters in [c] appears. 
     For instance, if string ["This is a string"] is split using the space
-    character [' '], then list [\["This";"is";"a";"string"\]] is returned.*)
+    character [" "], then list [\["This";"is";"a";"string"\]] is returned.*)
 
 val unix2dos : string -> string 
 (** Function [Ustring.unix2dos s] returns a string where newline characters in 

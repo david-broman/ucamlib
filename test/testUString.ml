@@ -37,32 +37,38 @@ let main() =
 
   (* --- *)
   let text = "Split function. Test 1." in
-  let res = Ustring.split (us"This is a test") (uc(' ')) in 
+  let res = Ustring.split (us"This is a test") (us" ") in 
   let exp = List.map us ["This";"is";"a";"test"] in
   test_list text res exp (fun x -> us"\"" ^. x ^. us"\"");
 
   (* --- *)
   let text = "Split function. Test 2." in
-  let res = Ustring.split (us"") (uc(',')) in 
+  let res = Ustring.split (us"") (us" ") in 
   let exp = List.map us [] in
   test_list text res exp (fun x -> us"\"" ^. x ^. us"\"");
 
   (* --- *)
   let text = "Split function. Test 3." in
-  let res = Ustring.split (us",foo1,foo2,") (uc(',')) in 
+  let res = Ustring.split (us",foo1,foo2,") (us",") in 
   let exp = List.map us ["";"foo1";"foo2";""] in
   test_list text res exp (fun x -> us"\"" ^. x ^. us"\"");
 
   (* --- *)
   let text = "Split function. Test 4." in
-  let res = Ustring.split (us",") (uc(',')) in 
+  let res = Ustring.split (us",") (us",") in 
   let exp = List.map us ["";""] in
   test_list text res exp (fun x -> us"\"" ^. x ^. us"\"");
 
   (* --- *)
   let text = "Split function. Test 5." in
-  let res = Ustring.split (us"foo") (uc(',')) in 
+  let res = Ustring.split (us"foo") (us",") in 
   let exp = List.map us ["foo"] in
+  test_list text res exp (fun x -> us"\"" ^. x ^. us"\"");
+
+  (* --- *)
+  let text = "Split function. Test 6." in
+  let res = Ustring.split (us"foo,hi:can:,bye") (us",:") in 
+  let exp = List.map us ["foo";"hi";"can";"";"bye"] in
   test_list text res exp (fun x -> us"\"" ^. x ^. us"\"");
 
  
