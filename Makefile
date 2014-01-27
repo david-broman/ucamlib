@@ -30,12 +30,12 @@ DIRS = src,test
 .PHONY: all test clean
 
 all:    libs apidoc
-	ocamlbuild -Is $(DIRS) ucaml.cma
-	ocamlbuild -Is $(DIRS) ucaml.cmxa
-	@cp _build/src/ucaml.cma libs/.
-	@cp _build/src/ucaml.cmxa libs/.
+	ocamlbuild -Is $(DIRS) ucamlib.cma
+	ocamlbuild -Is $(DIRS) ucamlib.cmxa
+	@cp _build/src/ucamlib.cma libs/.
+	@cp _build/src/ucamlib.cmxa libs/.
 	@echo "--------------------------------------"	
-	@echo "Finished building ucaml libraries."	
+	@echo "Finished building ucamlib."	
 	@echo "The new libraries are availble in 'libs/'."
 	@echo "Generated API documenation is available in 'doc/api'."
 
@@ -47,8 +47,8 @@ test:
 	@rm -f maintest.byte
 
 apidoc:
-	ocamlbuild -Is $(DIRS) doc/ucaml.docdir/index.html
-	@mv ucaml.docdir api; mv api doc/.
+	ocamlbuild -Is $(DIRS) doc/ucamlib.docdir/index.html
+	@mv ucamlib.docdir api; mv api doc/.
 
 clean:
 	ocamlbuild -clean
