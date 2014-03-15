@@ -121,8 +121,6 @@ let genlist f n =
 
 let xor b1 b2 = (b1 || b2) && (not (b1 && b2))
 
-let pipeprint f data = Ustring.Op.uprint_endline (f data);data 
-
 
 
 module Int =

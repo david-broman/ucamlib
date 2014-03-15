@@ -398,6 +398,10 @@ val read_file : ?encode_type:encoding -> string -> ustring
     occurred. Raises [Sys_error] if there where problems opening or reading
     from the file.*)
 
+val write_file : ?encode_type:encoding -> string -> ustring -> unit
+(** Function [Ustring.write_file fn s] writes unicode string [s] to a
+    a file named [fn]. The default character encoding is UTF-8. *)
+
 val read_from_channel : ?encode_type:encoding -> in_channel ->  
                         (int -> ustring)
 (** Function [Ustring.read_from_channel ic] returns a function which 

@@ -724,6 +724,15 @@ let read_file ?(encode_type=Auto) fn =
     close_in ic; sout
     
 
+let write_file ?(encode_type=Utf8) fn s =
+  let data = match encode_type with
+    | Utf8 -> to_utf8 s
+    | Latin1 -> to_latin1 s
+    | _ -> failwith "Encoding not supported." 
+  in
+  Utils.write_binfile fn data
+
+
 let compare s1 s2 = 
   let s1 = collapse_ustring s1 in
   let s2 = collapse_ustring s2 in
