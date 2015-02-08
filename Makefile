@@ -31,7 +31,7 @@ DIRS = src,test
 
 .PHONY: all test clean
 
-all:    bytesfix libs apidoc
+all:	bytesfix libs apidoc
 	ocamlbuild -Is $(DIRS) ucamlib.cma
 	ocamlbuild -Is $(DIRS) ucamlib.cmxa
 	@rm -f bytes.ml
@@ -45,13 +45,15 @@ all:    bytesfix libs apidoc
 libs:	
 	mkdir libs
 
-test:
+test:	bytesfix
 	ocamlbuild -Is $(DIRS) maintest.byte --
+	@rm -f bytes.ml
 	@rm -f maintest.byte
 
-apidoc:
+apidoc: bytesfix
 	ocamlbuild -Is $(DIRS) doc/ucamlib.docdir/index.html
 	@rm -f doc/api
+	@rm -f bytes.ml
 	@mv ucamlib.docdir api; mv api doc/.
 
 clean:
@@ -63,9 +65,10 @@ clean:
 	@echo "Finished cleaning project."
 
 
-# Solves a problem because of the introduction of Bytes.ml in the standard
+# Solves a problem because of the introduction of module Bytes in the standard
 # library in OCaml version 4.02. In the fix, we create a bytes.ml file locally
-# if the current OCaml version does not inclue bytes.ml
+# if the current OCaml version does not inclue module Bytes.
+
 BYTES = "let length s = String.length s\n"\
         "let create l = String.create l\n"\
         "let get s n = String.get s n\n"\
