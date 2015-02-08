@@ -50,10 +50,9 @@ test:	bytesfix
 	@rm -f bytes.ml
 	@rm -f maintest.byte
 
-apidoc: bytesfix
+apidoc:
 	ocamlbuild -Is $(DIRS) doc/ucamlib.docdir/index.html
 	@rm -f doc/api
-	@rm -f bytes.ml
 	@mv ucamlib.docdir api; mv api doc/.
 
 clean:
